@@ -99,10 +99,48 @@ object List {
   def foldRight2[A,B] (as: List[A], z:B)(f:(A,B) => B):B = foldLeft(as, z)((a,b)=>f(b,a))
 
   // 3-14
-  def append2[A] (l:List[A], m:List[A]) : List[A] =
+  def append2[A] (l:List[A], m:List[A]) : List[A] = foldLeft(l, m)((m, l) =>Cons(l,m))
+
+  // 3-15
+  def connect[A](l:List[List[A]]):List[A] = foldLeft(l, Nil:List[A])((a:List[A], b:List[A]) => append(a,b))
+
+  // 3-16
+  def addOne(l:List[Int]):List[Int] = foldRight(l, Nil:List[Int])((h:Int,list:List[Int])=>Cons(h+1, list))
+
+  // 3-17
+  def doubleToString(l:List[Double]):List[String] = foldRight(l, Nil:List[String])((h:Double, t:List[String])=>Cons(h.toString, t))
+
+  // 3-18
+  def map[A,B](as:List[A])(f:A=>B):List[B] = foldRight(as, Nil:List[B])((h:A, t:List[B])=>Cons(f(h), t))
+
+  // 3-19
+  def filter[A](as:List[A])(f: A=>Boolean):List[A] = as match {
+    case Cons(x, xs) if f(x) => Cons(x, filter(xs)(f))
+    case Cons(x, xs) if !f(x) => filter(xs)(f)
+    case Nil => Nil
+  }
+
+  // 3-20
+  def flatMap[A,B](as:List[A])(f:A=>List[B]):List[B] = foldRight(as,Nil:List[B])((h, t:List[B]) => append(f(h), t))
+
+  // 3-21
+  def filterUsingFlatMap[A](as:List[A])(f: A=>Boolean):List[A] =
+    flatMap(as)(x => if (f(x)) List(x) else Nil:List[A])
+
+  // 3-22
+  def indexSum(l:List[Int], m:List[Int]):List[Int] = (l, m) match {
+    case (Cons(lh:Int, lt: List[Int]), Cons(mh:Int, mt: List[Int])) => Cons(lh + mh, indexSum(lt, mt))
+    case _ => Nil
+  }
+
+  // 3-23
+  def zipWidth[A,B,C](l:List[A], m:List[B])(f: (A,B) => C):List[C] = (l,m) match {
+    case (Cons(lh, lt), Cons(mh,mt)) => Cons(f(lh, mh), zipWidth(lt, mt)(f))
+    case _ => Nil
+  }
 
   def main(args: Array[String]): Unit = {
-
+    println(indexSum(List(1,2,3), List(3,4,5)))
   }
 
 }
