@@ -139,6 +139,14 @@ object List {
     case _ => Nil
   }
 
+  // 3-24
+  def hasSubsequence[A](sup:List[A], sub:List[A]):Boolean = (sup, sub) match {
+    case (Cons(supH,supT), Cons(subH,subT)) if(supH == subH) => hasSubsequence(supT, subT)
+    case (Nil, Nil) => true
+    case (Cons(_, _), Nil) => true
+  }
+
+
   def main(args: Array[String]): Unit = {
     println(indexSum(List(1,2,3), List(3,4,5)))
   }
